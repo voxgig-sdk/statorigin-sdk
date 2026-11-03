@@ -1,0 +1,54 @@
+{
+  "existing": {
+    "indicator": {
+      "INDICATOR00": {
+        "definition": "s32",
+        "id": "INDICATOR00",
+        "name": "s34",
+        "slug": "s35",
+        "unit": "s36"
+      },
+      "INDICATOR01": {
+        "definition": "s64",
+        "id": "INDICATOR01",
+        "name": "s66",
+        "slug": "s67",
+        "unit": "s68"
+      },
+      "INDICATOR02": {
+        "definition": "s96",
+        "id": "INDICATOR02",
+        "name": "s98",
+        "slug": "s99",
+        "unit": "s9a"
+      }
+    }
+  },
+  "new": {
+    "indicator": {
+      "indicator_ref01": {
+        "definition": "sc8",
+        "name": "sca",
+        "slug": "scb",
+        "unit": "scc"
+      }
+    }
+  },
+  "requests": {
+    "GET /indicators": {
+      "provenance": "operation-contract",
+      "version": 2,
+      "source": "openapi3"
+    },
+    "GET /indicators/{slug}": {
+      "provenance": "operation-contract",
+      "version": 2,
+      "source": "openapi3"
+    },
+    "GET /indicators/{slug}/series": {
+      "provenance": "operation-contract",
+      "version": 2,
+      "source": "openapi3"
+    }
+  }
+}

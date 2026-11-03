@@ -1,0 +1,44 @@
+# BasicIndustryFlow
+
+main: kit: flow: BasicIndustryFlow:
+{
+  entity: "industry",
+  kind: "basic",
+  name: "BasicIndustryFlow",
+  step: [
+    {
+      o: "list",
+      v: [
+        {
+          apply: "ItemExists",
+          def: {
+            ref: "industry_ref01"
+          }
+        }
+      ]
+    }
+
+    {
+      i: {
+        ref: "industry_ref01",
+        srcdatavar: "industry_ref01_data",
+        suffix: "_dt0"
+      }
+
+      m: {
+        id: "industry01"
+      }
+
+      o: "load",
+      v: [
+        {
+          apply: "TextFieldMark",
+          def: {
+            mark: "Mark01-industry_ref01"
+          }
+        }
+      ]
+    }
+  ],
+  "key$": "BasicIndustryFlow"
+}

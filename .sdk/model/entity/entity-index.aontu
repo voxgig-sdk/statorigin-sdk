@@ -1,0 +1,8 @@
+# Entity Models
+
+@"./indicator.aontu"
+@"./industry.aontu"
+@"./region.aontu"
+@"./search.aontu"
+@"./source.aontu"
+@"./statistic.aontu"

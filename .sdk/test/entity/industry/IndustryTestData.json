@@ -1,0 +1,53 @@
+{
+  "existing": {
+    "industry": {
+      "INDUSTRY00": {
+        "id": "INDUSTRY00",
+        "isic": "s3d",
+        "level": 62,
+        "name": "s3f",
+        "parent_id": "PARENT01",
+        "slug": "s41"
+      },
+      "INDUSTRY01": {
+        "id": "INDUSTRY01",
+        "isic": "s79",
+        "level": 122,
+        "name": "s7b",
+        "parent_id": "PARENT01",
+        "slug": "s7d"
+      },
+      "INDUSTRY02": {
+        "id": "INDUSTRY02",
+        "isic": "sb5",
+        "level": 182,
+        "name": "sb7",
+        "parent_id": "PARENT01",
+        "slug": "sb9"
+      }
+    }
+  },
+  "new": {
+    "industry": {
+      "industry_ref01": {
+        "isic": "sf1",
+        "level": 242,
+        "name": "sf3",
+        "parent_id": "PARENT01",
+        "slug": "sf5"
+      }
+    }
+  },
+  "requests": {
+    "GET /industries": {
+      "provenance": "operation-contract",
+      "version": 2,
+      "source": "openapi3"
+    },
+    "GET /industries/{slug}": {
+      "provenance": "operation-contract",
+      "version": 2,
+      "source": "openapi3"
+    }
+  }
+}

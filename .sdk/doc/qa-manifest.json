@@ -1,0 +1,30 @@
+{
+  "files": [
+    "SUMMARY.md"
+  ],
+  "config": ".sdk/doc/qa/vale.ini",
+  "routes": {},
+  "quoted": {
+    "SUMMARY.md": [
+      "> Every response carries the full provenance of each data point: the publishing\n> organisation, report title, publication date, page or table locator, the verbatim\n> sentence the value was extracted from, and a working link to the original document.\n>\n> Data is licensed under CC BY 4.0. Attribution is required and should name\n> the original publisher, linking back to the permanent record.\n>\n> **Authentication is optional.** Anonymous callers get 1,000 requests per day per IP. A free API key raises this to 10,000. Send it as `Authorization: Bearer so_live_…`. Non-JSON endpoints (/industries/&#123;slug&#125;/export.xlsx, /industries/&#123;slug&#125;/export.csv, /indicators/&#123;slug&#125;/export.xlsx, /indicators/&#123;slug&#125;/export.csv, /regions/&#123;slug&#125;/export.xlsx, /regions/&#123;slug&#125;/export.csv) were removed on 2026-10-23: the SDK reads JSON.",
+      "Complete provenance. Never omitted.",
+      "False once `superseded_by` is set",
+      "Id of the newer record that corrected this one. Non-null means this record is no longer current; its URL still resolves.",
+      "Id of the older record this one corrected, if any",
+      "Indicator detail",
+      "Indicator list",
+      "Industry detail",
+      "Industry list",
+      "Matching data points",
+      "Organisation list",
+      "Organisation, its documents and its statistics",
+      "Region list",
+      "Search results",
+      "Series",
+      "Stable prefixed identifier.",
+      "The record",
+      "True when the figure was relayed from a secondary source",
+      "URL key: the item routes take this."
+    ]
+  }
+}

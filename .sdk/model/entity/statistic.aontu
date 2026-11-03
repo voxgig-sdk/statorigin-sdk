@@ -1,0 +1,350 @@
+# Entity: statistic
+
+main: kit: entity: statistic: {
+
+  alias: field: {}
+
+  fields: {
+    citation: {
+      h: "Citation"
+      n: "citation"
+      r: true
+      t: "`$OBJECT`"
+    }
+    confidence: {
+      h: "Confidence"
+      n: "confidence"
+      r: false
+      t: [
+        "`$ONE`"
+        [
+          "`$NUMBER`"
+          "`$NULL`"
+        ]
+      ]
+    }
+    currency: {
+      h: "Currency"
+      n: "currency"
+      r: false
+      t: [
+        "`$ONE`"
+        [
+          "`$STRING`"
+          "`$NULL`"
+        ]
+      ]
+    }
+    id: {
+      h: "Id"
+      n: "id"
+      r: true
+      t: "`$STRING`"
+    }
+    indicator: {
+      h: "Indicator"
+      n: "indicator"
+      r: true
+      t: "`$OBJECT`"
+    }
+    industry: {
+      h: "Industry"
+      n: "industry"
+      r: false
+      t: "`$ARRAY`"
+    }
+    is_current: {
+      h: "Is Current"
+      n: "is_current"
+      r: false
+      sh: "False once superseded_by is set"
+      t: "`$BOOLEAN`"
+    }
+    is_secondhand: {
+      h: "Is Secondhand"
+      n: "is_secondhand"
+      r: false
+      sh: "True when the figure was relayed from a secondary source"
+      t: "`$BOOLEAN`"
+    }
+    period: {
+      h: "Period"
+      n: "period"
+      r: true
+      t: "`$OBJECT`"
+    }
+    region: {
+      h: "Region"
+      n: "region"
+      r: true
+      t: "`$OBJECT`"
+    }
+    scale: {
+      h: "Scale"
+      n: "scale"
+      r: false
+      t: "`$STRING`"
+    }
+    source: {
+      h: "Source"
+      n: "source"
+      r: true
+      sh: "Complete provenance."
+      t: "`$OBJECT`"
+    }
+    superseded_by: {
+      h: "Superseded By"
+      n: "superseded_by"
+      r: false
+      sh: "Id of the newer record that corrected this one."
+      t: [
+        "`$ONE`"
+        [
+          "`$STRING`"
+          "`$NULL`"
+        ]
+      ]
+    }
+    supersedes: {
+      h: "Supersedes"
+      n: "supersedes"
+      r: false
+      sh: "Id of the older record this one corrected, if any"
+      t: [
+        "`$ONE`"
+        [
+          "`$STRING`"
+          "`$NULL`"
+        ]
+      ]
+    }
+    unit: {
+      h: "Unit"
+      n: "unit"
+      r: true
+      t: "`$STRING`"
+    }
+    updated_at: {
+      fo: "date-time"
+      h: "Updated At"
+      n: "updated_at"
+      r: false
+      t: "`$STRING`"
+    }
+    url: {
+      fo: "uri"
+      h: "Url"
+      n: "url"
+      r: true
+      t: "`$STRING`"
+    }
+    value: {
+      h: "Value"
+      n: "value"
+      r: true
+      t: "`$NUMBER`"
+    }
+    value_text: {
+      h: "Value Text"
+      n: "value_text"
+      r: false
+      sh: "The source's own phrasing, preserved verbatim"
+      t: [
+        "`$ONE`"
+        [
+          "`$STRING`"
+          "`$NULL`"
+        ]
+      ]
+    }
+    value_type: {
+      h: "Value Type"
+      n: "value_type"
+      r: false
+      t: "`$STRING`"
+    }
+    verification: {
+      h: "Verification"
+      n: "verification"
+      r: false
+      t: "`$STRING`"
+    }
+    verified_at: {
+      fo: "date-time"
+      h: "Verified At"
+      n: "verified_at"
+      r: false
+      t: [
+        "`$ONE`"
+        [
+          "`$STRING`"
+          "`$NULL`"
+        ]
+      ]
+    }
+    verified_by: {
+      h: "Verified By"
+      n: "verified_by"
+      r: false
+      t: [
+        "`$ONE`"
+        [
+          "`$STRING`"
+          "`$NULL`"
+        ]
+      ]
+    }
+  }
+
+  id: {
+    field: "id"
+    name: "id"
+  }
+
+  name: "statistic"
+  op: {
+    list: {
+      name: "list"
+      points: [
+        {
+          co: {
+            id: "GET /statistics"
+            source: "openapi3"
+            version: 2
+          }
+          g: {
+            query: [
+              {
+                k: "query"
+                n: "cursor"
+                or: "cursor"
+                r: false
+                t: "`$STRING`"
+              }
+              {
+                ex: "global-ev-annual-sales"
+                k: "query"
+                n: "indicator"
+                or: "indicator"
+                r: false
+                t: "`$STRING`"
+              }
+              {
+                ex: "electric-vehicles"
+                k: "query"
+                n: "industry"
+                or: "industry"
+                r: false
+                t: "`$STRING`"
+              }
+              {
+                ex: 50
+                k: "query"
+                n: "limit"
+                or: "limit"
+                r: false
+                t: "`$INTEGER`"
+              }
+              {
+                ex: "CN,US"
+                k: "query"
+                n: "region"
+                or: "region"
+                r: false
+                t: "`$STRING`"
+              }
+              {
+                ex: "international-energy-agency"
+                k: "query"
+                n: "source_org"
+                or: "source_org"
+                r: false
+                t: "`$STRING`"
+              }
+              {
+                k: "query"
+                n: "value_type"
+                or: "value_type"
+                r: false
+                t: "`$STRING`"
+              }
+              {
+                ex: "2020..2026"
+                k: "query"
+                n: "year"
+                or: "year"
+                r: false
+                t: "`$STRING`"
+              }
+            ]
+          }
+          m: "GET"
+          o: "/statistics"
+          rs: {
+            kind: "json"
+            media: "application/json"
+          }
+          s: [
+            {
+              lit: "statistics"
+            }
+          ]
+          t: {
+            req: "`reqdata`"
+            res: "`body.data`"
+          }
+        }
+      ]
+    }
+    load: {
+      name: "load"
+      points: [
+        {
+          co: {
+            id: "GET /statistics/{id}"
+            source: "openapi3"
+            version: 2
+          }
+          g: {
+            params: [
+              {
+                ex: "stat_01M2HY9T5WMAQVXEKJ4XAX4XNG"
+                k: "param"
+                n: "id"
+                or: "id"
+                r: true
+                t: "`$STRING`"
+              }
+            ]
+          }
+          m: "GET"
+          o: "/statistics/{id}"
+          q: {
+            exist: [
+              "id"
+            ]
+          }
+          rs: {
+            kind: "json"
+            media: "application/json"
+          }
+          s: [
+            {
+              lit: "statistics"
+            }
+            {
+              var: "id"
+            }
+          ]
+          t: {
+            req: "`reqdata`"
+            res: "`body.data`"
+          }
+        }
+      ]
+    }
+  }
+
+
+
+}

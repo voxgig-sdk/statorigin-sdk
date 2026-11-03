@@ -1,0 +1,8 @@
+# Flows
+
+@"./BasicIndicatorFlow.aontu"
+@"./BasicIndustryFlow.aontu"
+@"./BasicRegionFlow.aontu"
+@"./BasicSearchFlow.aontu"
+@"./BasicSourceFlow.aontu"
+@"./BasicStatisticFlow.aontu"

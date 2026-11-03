@@ -1,0 +1,33 @@
+{
+  "existing": {
+    "region": {
+      "REGION00": {
+        "data": [],
+        "meta": {}
+      },
+      "REGION01": {
+        "data": [],
+        "meta": {}
+      },
+      "REGION02": {
+        "data": [],
+        "meta": {}
+      }
+    }
+  },
+  "new": {
+    "region": {
+      "region_ref01": {
+        "data": [],
+        "meta": {}
+      }
+    }
+  },
+  "requests": {
+    "GET /regions": {
+      "provenance": "operation-contract",
+      "version": 2,
+      "source": "openapi3"
+    }
+  }
+}

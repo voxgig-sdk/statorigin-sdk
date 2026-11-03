@@ -1,0 +1,44 @@
+# BasicStatisticFlow
+
+main: kit: flow: BasicStatisticFlow:
+{
+  entity: "statistic",
+  kind: "basic",
+  name: "BasicStatisticFlow",
+  step: [
+    {
+      o: "list",
+      v: [
+        {
+          apply: "ItemExists",
+          def: {
+            ref: "statistic_ref01"
+          }
+        }
+      ]
+    }
+
+    {
+      i: {
+        ref: "statistic_ref01",
+        srcdatavar: "statistic_ref01_data",
+        suffix: "_dt0"
+      }
+
+      m: {
+        id: "statistic01"
+      }
+
+      o: "load",
+      v: [
+        {
+          apply: "TextFieldMark",
+          def: {
+            mark: "Mark01-statistic_ref01"
+          }
+        }
+      ]
+    }
+  ],
+  "key$": "BasicStatisticFlow"
+}

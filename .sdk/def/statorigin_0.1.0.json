@@ -1,0 +1,1172 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "StatOrigin API",
+    "version": "1.0.0",
+    "summary": "Free, open industry statistics with complete primary-source provenance.",
+    "description": "Every response carries the full provenance of each data point: the publishing\norganisation, report title, publication date, page or table locator, the verbatim\nsentence the value was extracted from, and a working link to the original document.\n\nData is licensed under CC BY 4.0. Attribution is required and should name\nthe original publisher, linking back to the permanent record.\n\n**Authentication is optional.** Anonymous callers get 1,000 requests per day per IP. A free API key raises this to 10,000. Send it as `Authorization: Bearer so_live_…`. Non-JSON endpoints (/industries/{slug}/export.xlsx, /industries/{slug}/export.csv, /indicators/{slug}/export.xlsx, /indicators/{slug}/export.csv, /regions/{slug}/export.xlsx, /regions/{slug}/export.csv) were removed on 2026-10-23: the SDK reads JSON.",
+    "license": {
+      "name": "CC BY 4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "contact": {
+      "name": "StatOrigin",
+      "url": "https://statorigin.org"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://statorigin.org/api/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Statistics",
+      "description": "Data points with full provenance"
+    },
+    {
+      "name": "Industries",
+      "description": "ISIC Rev.4 classification"
+    },
+    {
+      "name": "Indicators",
+      "description": "Indicator definitions and time series"
+    },
+    {
+      "name": "Sources",
+      "description": "Publishing organisations and their documents"
+    },
+    {
+      "name": "Regions",
+      "description": "Countries and supranational groupings"
+    },
+    {
+      "name": "Search",
+      "description": "Full-text search"
+    }
+  ],
+  "paths": {
+    "/statistics": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "summary": "Query statistics",
+        "description": "The main endpoint. Returns published, verified data points matching the filters, each with complete provenance.",
+        "operationId": "queryStatistics",
+        "parameters": [
+          {
+            "name": "industry",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Industry slug. Comma-separate for multiple.",
+            "example": "electric-vehicles"
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Region code or slug. Comma-separate for multiple.",
+            "example": "CN,US"
+          },
+          {
+            "name": "indicator",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Indicator slug",
+            "example": "global-ev-annual-sales"
+          },
+          {
+            "name": "year",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Single year or inclusive range",
+            "example": "2020..2026"
+          },
+          {
+            "name": "value_type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "actual",
+                "estimate",
+                "forecast"
+              ]
+            }
+          },
+          {
+            "name": "source_org",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Source organisation slug",
+            "example": "international-energy-agency"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 50
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque cursor from a previous `meta.next_cursor`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Matching data points",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Statistic"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Daily quota exhausted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/statistics/{id}": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "summary": "Get one data point",
+        "description": "Returns a single record plus any sources that disagree with it.",
+        "operationId": "getStatistic",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "stat_01M2HY9T5WMAQVXEKJ4XAX4XNG"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Statistic"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/industries": {
+      "get": {
+        "tags": [
+          "Industries"
+        ],
+        "summary": "List industries",
+        "description": "The ISIC Rev.4 tree: 21 sections and 88 divisions.",
+        "operationId": "listIndustries",
+        "parameters": [
+          {
+            "name": "level",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4
+            },
+            "description": "1 = section, 2 = division"
+          },
+          {
+            "name": "parent",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Parent ISIC code",
+            "example": "C"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Industry list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Industry"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/industries/{slug}": {
+      "get": {
+        "tags": [
+          "Industries"
+        ],
+        "summary": "Get one industry",
+        "description": "Industry detail plus a coverage summary, its indicators, regions and sources.",
+        "operationId": "getIndustry",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "electric-vehicles"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Industry detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Industry"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/indicators": {
+      "get": {
+        "tags": [
+          "Indicators"
+        ],
+        "summary": "List indicators",
+        "operationId": "listIndicators",
+        "parameters": [
+          {
+            "name": "industry",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Substring match on name and definition"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Indicator list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Indicator"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/indicators/{slug}": {
+      "get": {
+        "tags": [
+          "Indicators"
+        ],
+        "summary": "Get one indicator",
+        "operationId": "getIndicator",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "global-ev-annual-sales"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Indicator detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Indicator"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/indicators/{slug}/series": {
+      "get": {
+        "tags": [
+          "Indicators"
+        ],
+        "summary": "Time series for an indicator",
+        "description": "One entry per observation, each carrying its own source. A time series here is a set of individually sourced points, not one dataset with one citation.",
+        "operationId": "getIndicatorSeries",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "global-ev-annual-sales"
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Region code or slug. Defaults to GLOBAL."
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 2015
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 2026
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Series",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sources": {
+      "get": {
+        "tags": [
+          "Sources"
+        ],
+        "summary": "List source organisations",
+        "operationId": "listSources",
+        "parameters": [
+          {
+            "name": "tier",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Organisation list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Source"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sources/{slug}": {
+      "get": {
+        "tags": [
+          "Sources"
+        ],
+        "summary": "Get one source organisation",
+        "operationId": "getSource",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "international-energy-agency"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Organisation, its documents and its statistics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Source"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/regions": {
+      "get": {
+        "tags": [
+          "Regions"
+        ],
+        "summary": "List regions",
+        "operationId": "listRegions",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "world",
+                "country",
+                "bloc",
+                "subnational"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Region list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/search": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "Full-text search",
+        "description": "Searches indicator names, region names, industry names, source organisations and the verbatim source quotes.",
+        "operationId": "search",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 120
+            },
+            "example": "electric"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Statistic": {
+        "type": "object",
+        "required": [
+          "id",
+          "url",
+          "indicator",
+          "region",
+          "period",
+          "value",
+          "unit",
+          "source",
+          "citation"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "examples": [
+              "stat_01JBXK7Y3Q8M2N4P6R8T0V2W4X"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "indicator": {
+            "type": "object",
+            "properties": {
+              "slug": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "definition": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          },
+          "industry": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "slug": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "isic": {
+                  "type": "string",
+                  "description": "ISIC Rev.4 code"
+                },
+                "is_primary": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "region": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "world",
+                  "country",
+                  "bloc",
+                  "subnational"
+                ]
+              }
+            }
+          },
+          "period": {
+            "type": "object",
+            "properties": {
+              "start": {
+                "type": "string",
+                "format": "date"
+              },
+              "end": {
+                "type": "string",
+                "format": "date"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "year",
+                  "quarter",
+                  "month",
+                  "point",
+                  "range"
+                ]
+              }
+            }
+          },
+          "value": {
+            "type": "number"
+          },
+          "value_text": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The source's own phrasing, preserved verbatim"
+          },
+          "unit": {
+            "type": "string",
+            "examples": [
+              "count",
+              "USD",
+              "percent",
+              "GWh"
+            ]
+          },
+          "currency": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "scale": {
+            "type": "string",
+            "enum": [
+              "1",
+              "thousand",
+              "million",
+              "billion",
+              "trillion"
+            ]
+          },
+          "value_type": {
+            "type": "string",
+            "enum": [
+              "actual",
+              "estimate",
+              "forecast"
+            ]
+          },
+          "source": {
+            "type": "object",
+            "description": "Complete provenance. Never omitted.",
+            "properties": {
+              "org": {
+                "type": "string"
+              },
+              "org_short_name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "org_url": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uri"
+              },
+              "org_tier": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "document_title": {
+                "type": "string"
+              },
+              "document_url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "document_type": {
+                "type": "string"
+              },
+              "locator": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Page, table or section"
+              },
+              "quote": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Verbatim quotation for quote evidence; explicitly labelled generated description for dataset evidence"
+              },
+              "evidence_type": {
+                "type": "string",
+                "enum": [
+                  "quote",
+                  "dataset"
+                ],
+                "description": "How the value is evidenced"
+              },
+              "dataset_query": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "additionalProperties": true,
+                "description": "Dataset code and keys selecting the unique observation"
+              },
+              "dataset_evidence": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "additionalProperties": true,
+                "description": "Publisher response URL, version, retrieval time, SHA-256, schema mapping and methodology URL"
+              },
+              "published_date": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date"
+              },
+              "accessed_at": {
+                "type": "string",
+                "format": "date"
+              },
+              "license": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "url_status": {
+                "type": "string",
+                "enum": [
+                  "ok",
+                  "redirect",
+                  "dead"
+                ]
+              },
+              "self_reported": {
+                "type": "boolean",
+                "description": "True when the publisher reports on itself (a company's own results or operations) rather than on the market. Industry hub pages exclude these; they remain available here and on the publisher's page."
+              }
+            }
+          },
+          "verification": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "verified",
+              "disputed",
+              "rejected"
+            ]
+          },
+          "verified_by": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "verified_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "confidence": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 1
+          },
+          "is_secondhand": {
+            "type": "boolean",
+            "description": "True when the figure was relayed from a secondary source"
+          },
+          "supersedes": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Id of the older record this one corrected, if any"
+          },
+          "superseded_by": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Id of the newer record that corrected this one. Non-null means this record is no longer current; its URL still resolves."
+          },
+          "is_current": {
+            "type": "boolean",
+            "description": "False once superseded_by is set"
+          },
+          "citation": {
+            "type": "object",
+            "properties": {
+              "apa": {
+                "type": "string"
+              },
+              "bibtex": {
+                "type": "string"
+              }
+            }
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Meta": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "next_cursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "attribution": {
+            "type": "string"
+          },
+          "license": {
+            "type": "string",
+            "format": "uri"
+          },
+          "docs": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              },
+              "docs": {
+                "type": "string",
+                "format": "uri"
+              }
+            }
+          }
+        }
+      },
+      "Indicator": {
+        "type": "object",
+        "description": "An indicator.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable prefixed identifier."
+          },
+          "slug": {
+            "type": "string",
+            "description": "URL key: the item routes take this."
+          },
+          "name": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "definition": {
+            "type": "string"
+          }
+        }
+      },
+      "Industry": {
+        "type": "object",
+        "description": "An ISIC industry.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable prefixed identifier."
+          },
+          "slug": {
+            "type": "string",
+            "description": "URL key: the item routes take this."
+          },
+          "name": {
+            "type": "string"
+          },
+          "isic": {
+            "type": "string"
+          },
+          "level": {
+            "type": "integer"
+          },
+          "parent_id": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Source": {
+        "type": "object",
+        "description": "A statistics source.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable prefixed identifier."
+          },
+          "slug": {
+            "type": "string",
+            "description": "URL key: the item routes take this."
+          },
+          "name": {
+            "type": "string"
+          },
+          "short_name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "tier": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}

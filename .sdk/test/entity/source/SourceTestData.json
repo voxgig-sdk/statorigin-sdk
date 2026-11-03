@@ -1,0 +1,53 @@
+{
+  "existing": {
+    "source": {
+      "SOURCE00": {
+        "id": "SOURCE00",
+        "name": "s3d",
+        "short_name": "s3e",
+        "slug": "s3f",
+        "tier": 64,
+        "type": "s41"
+      },
+      "SOURCE01": {
+        "id": "SOURCE01",
+        "name": "s79",
+        "short_name": "s7a",
+        "slug": "s7b",
+        "tier": 124,
+        "type": "s7d"
+      },
+      "SOURCE02": {
+        "id": "SOURCE02",
+        "name": "sb5",
+        "short_name": "sb6",
+        "slug": "sb7",
+        "tier": 184,
+        "type": "sb9"
+      }
+    }
+  },
+  "new": {
+    "source": {
+      "source_ref01": {
+        "name": "sf1",
+        "short_name": "sf2",
+        "slug": "sf3",
+        "tier": 244,
+        "type": "sf5"
+      }
+    }
+  },
+  "requests": {
+    "GET /sources": {
+      "provenance": "operation-contract",
+      "version": 2,
+      "source": "openapi3"
+    },
+    "GET /sources/{slug}": {
+      "provenance": "operation-contract",
+      "version": 2,
+      "source": "openapi3"
+    }
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "existing": {
+    "statistic": {
+      "STATISTIC00": {
+        "citation": {},
+        "confidence": "se7",
+        "currency": "se8",
+        "id": "STATISTIC00",
+        "indicator": {},
+        "industry": [],
+        "is_current": true,
+        "is_secondhand": false,
+        "period": {},
+        "region": {},
+        "scale": "sf0",
+        "source": {},
+        "superseded_by": "sf2",
+        "supersedes": "sf3",
+        "unit": "sf4",
+        "updated_at": "sf5",
+        "url": "sf6",
+        "value": 247,
+        "value_text": "sf8",
+        "value_type": "sf9",
+        "verification": "sfa",
+        "verified_at": "sfb",
+        "verified_by": "sfc"
+      },
+      "STATISTIC01": {
+        "citation": {},
+        "confidence": "s1cd",
+        "currency": "s1ce",
+        "id": "STATISTIC01",
+        "indicator": {},
+        "industry": [],
+        "is_current": true,
+        "is_secondhand": false,
+        "period": {},
+        "region": {},
+        "scale": "s1d6",
+        "source": {},
+        "superseded_by": "s1d8",
+        "supersedes": "s1d9",
+        "unit": "s1da",
+        "updated_at": "s1db",
+        "url": "s1dc",
+        "value": 477,
+        "value_text": "s1de",
+        "value_type": "s1df",
+        "verification": "s1e0",
+        "verified_at": "s1e1",
+        "verified_by": "s1e2"
+      },
+      "STATISTIC02": {
+        "citation": {},
+        "confidence": "s2b3",
+        "currency": "s2b4",
+        "id": "STATISTIC02",
+        "indicator": {},
+        "industry": [],
+        "is_current": true,
+        "is_secondhand": false,
+        "period": {},
+        "region": {},
+        "scale": "s2bc",
+        "source": {},
+        "superseded_by": "s2be",
+        "supersedes": "s2bf",
+        "unit": "s2c0",
+        "updated_at": "s2c1",
+        "url": "s2c2",
+        "value": 707,
+        "value_text": "s2c4",
+        "value_type": "s2c5",
+        "verification": "s2c6",
+        "verified_at": "s2c7",
+        "verified_by": "s2c8"
+      }
+    }
+  },
+  "new": {
+    "statistic": {
+      "statistic_ref01": {
+        "citation": {},
+        "confidence": "s399",
+        "currency": "s39a",
+        "indicator": {},
+        "industry": [],
+        "is_current": true,
+        "is_secondhand": false,
+        "period": {},
+        "region": {},
+        "scale": "s3a2",
+        "source": {},
+        "superseded_by": "s3a4",
+        "supersedes": "s3a5",
+        "unit": "s3a6",
+        "updated_at": "s3a7",
+        "url": "s3a8",
+        "value": 937,
+        "value_text": "s3aa",
+        "value_type": "s3ab",
+        "verification": "s3ac",
+        "verified_at": "s3ad",
+        "verified_by": "s3ae"
+      }
+    }
+  },
+  "requests": {
+    "GET /statistics": {
+      "provenance": "operation-contract",
+      "version": 2,
+      "source": "openapi3"
+    },
+    "GET /statistics/{id}": {
+      "provenance": "operation-contract",
+      "version": 2,
+      "source": "openapi3"
+    }
+  }
+}
